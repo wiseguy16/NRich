@@ -36,8 +36,7 @@ class SummaryViewController: UIViewController {
         
     }
     
-    func setupFirebaseData() {
-        ref = Database.database().reference()
+    func setupChildAdded(for ref: DatabaseReference?) {
         handle = ref?.child("Expense").observe(.childAdded, with: { (snapshot) in
             if let item = snapshot.value as? [String: String] {
                 let anExspense = Expense()
@@ -60,7 +59,6 @@ class SummaryViewController: UIViewController {
                     if let amount = item["Amount"]  {
                         if let itemAmount = Double(amount) {
                             self.availableMoney -= itemAmount
-                            print("\(self.availableMoney)")
                         }
                     }
                 }
@@ -68,14 +66,15 @@ class SummaryViewController: UIViewController {
                 self.summarytableView.reloadData()
             }
         })
-        
+    }
+    
+    func setupChildRemoved(for ref: DatabaseReference?) {
         handle = ref?.child("Expense").observe(.childRemoved, with: { (snapshot) in
-            if let item = snapshot.value as? [String: String] { print("Dictionary >> :\(item)")
+            if let item = snapshot.value as? [String: String] {
                 if let id = item["Id"] {
                     
                     for (i, e) in self.monthlyExpenses.enumerated() {
                         if e.id == id {
-                            print("\(e.id)")
                             self.monthlyExpenses.remove(at: i)
                             break
                         }
@@ -89,14 +88,15 @@ class SummaryViewController: UIViewController {
                 }
             }
         })
-        
+    }
+    
+    func setupChildChanged(for ref: DatabaseReference?) {
         handle = ref?.child("Expense").observe(.childChanged, with: { (snapshot) in
-            if let item = snapshot.value as? [String: String] { print("Dictionary >> :\(item)")
+            if let item = snapshot.value as? [String: String] {
                 if let id = item["Id"] {
                     
                     for (i, e) in self.monthlyExpenses.enumerated() {
                         if e.id == id {
-                            print("\(e.id)")
                             let anExspense = Expense()
                             if let desc = item["Descript"] {
                                 anExspense.descript = desc
@@ -127,6 +127,14 @@ class SummaryViewController: UIViewController {
         })
     }
     
+    func setupFirebaseData() {
+        ref = Database.database().reference()
+
+        setupChildAdded(for: ref)
+        setupChildRemoved(for: ref)
+        setupChildChanged(for: ref)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         currentMonth = Date().month
@@ -147,7 +155,6 @@ class SummaryViewController: UIViewController {
         let amount = expense.amount
         if let itemAmount = Double(amount) {
             self.availableMoney -= itemAmount
-            print("\(self.availableMoney)")
         }
     }
     

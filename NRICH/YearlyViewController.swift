@@ -32,8 +32,7 @@ class YearlyViewController: UIViewController {
         setupFirebaseData()
     }
     
-    func setupFirebaseData() {
-        ref = Database.database().reference()
+    func setupChildAdded(for ref:DatabaseReference?) {
         handle = ref?.child("Expense").observe(.childAdded, with: { (snapshot) in
             if let item = snapshot.value as? [String: String] {
                 let anExspense = Expense()
@@ -61,7 +60,9 @@ class YearlyViewController: UIViewController {
                 self.summarytableView.reloadData()
             }
         })
-        
+    }
+    
+    func setupChildRemoved(for ref:DatabaseReference?) {
         handle = ref?.child("Expense").observe(.childRemoved, with: { (snapshot) in
             if let item = snapshot.value as? [String: String] {
                 if let id = item["Id"] {
@@ -81,7 +82,9 @@ class YearlyViewController: UIViewController {
                 }
             }
         })
-        
+    }
+    
+    func setupChildChanged(for ref:DatabaseReference?) {
         handle = ref?.child("Expense").observe(.childChanged, with: { (snapshot) in
             if let item = snapshot.value as? [String: String] {
                 if let id = item["Id"] {
@@ -114,6 +117,13 @@ class YearlyViewController: UIViewController {
                 }
             }
         })
+    }
+    
+    func setupFirebaseData() {
+        ref = Database.database().reference()
+        setupChildAdded(for: ref)
+        setupChildRemoved(for: ref)
+        setupChildChanged(for: ref)
     }
     
     func sortExpensesByDateAndMonth() {
