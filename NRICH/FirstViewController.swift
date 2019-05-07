@@ -14,10 +14,8 @@ class FirstViewController: UIViewController {
     @IBOutlet weak var myTextfield: UITextField!
     @IBOutlet weak var numberTextField: UITextField!
     
-    
     var ref: DatabaseReference?
     let indexer = GlobalId.shared
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()

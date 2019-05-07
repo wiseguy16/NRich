@@ -55,7 +55,6 @@ class YearlyViewController: UIViewController {
                 if let amount = item["Amount"]  {
                     if let itemAmount = Double(amount) {
                         self.availableMoney += itemAmount
-                        print("\(self.availableMoney)")
                     }
                 }
                 self.sortExpensesByDateAndMonth()
@@ -64,12 +63,11 @@ class YearlyViewController: UIViewController {
         })
         
         handle = ref?.child("Expense").observe(.childRemoved, with: { (snapshot) in
-            if let item = snapshot.value as? [String: String] { print("Dictionary >> :\(item)")
+            if let item = snapshot.value as? [String: String] {
                 if let id = item["Id"] {
                     
                     for (i, e) in self.yearlyExpenses.enumerated() {
                         if e.id == id {
-                            print("\(e.id)")
                             self.yearlyExpenses.remove(at: i)
                             break
                         }
@@ -85,12 +83,11 @@ class YearlyViewController: UIViewController {
         })
         
         handle = ref?.child("Expense").observe(.childChanged, with: { (snapshot) in
-            if let item = snapshot.value as? [String: String] { print("Dictionary >> :\(item)")
+            if let item = snapshot.value as? [String: String] {
                 if let id = item["Id"] {
                     
                     for (i, e) in self.yearlyExpenses.enumerated() {
                         if e.id == id {
-                            print("\(e.id)")
                             let anExspense = Expense()
                             if let desc = item["Descript"] {
                                 anExspense.descript = desc
@@ -133,7 +130,6 @@ class YearlyViewController: UIViewController {
         let amount = expense.amount
         if let itemAmount = Double(amount) {
             self.availableMoney += itemAmount
-            print("\(self.availableMoney)")
         }
     }
     
