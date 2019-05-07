@@ -29,7 +29,10 @@ class YearlyViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        setupFirebaseData()
+    }
+    
+    func setupFirebaseData() {
         ref = Database.database().reference()
         handle = ref?.child("Expense").observe(.childAdded, with: { (snapshot) in
             if let item = snapshot.value as? [String: String] {
@@ -47,14 +50,14 @@ class YearlyViewController: UIViewController {
                     anExspense.date = date
                 }
                 
-                    self.yearlyExpenses.insert(anExspense, at: 0)
-                    
-                    if let amount = item["Amount"]  {
-                        if let itemAmount = Double(amount) {
-                            self.availableMoney += itemAmount
-                            print("\(self.availableMoney)")
-                        }
+                self.yearlyExpenses.insert(anExspense, at: 0)
+                
+                if let amount = item["Amount"]  {
+                    if let itemAmount = Double(amount) {
+                        self.availableMoney += itemAmount
+                        print("\(self.availableMoney)")
                     }
+                }
                 self.sortExpensesByDateAndMonth()
                 self.summarytableView.reloadData()
             }
@@ -101,8 +104,8 @@ class YearlyViewController: UIViewController {
                             if let date = item["Date"] {
                                 anExspense.date = date
                             }
-                                self.yearlyExpenses.remove(at: i)
-                                self.yearlyExpenses.insert(anExspense, at: i)
+                            self.yearlyExpenses.remove(at: i)
+                            self.yearlyExpenses.insert(anExspense, at: i)
                         }
                     }
                     self.sortExpensesByDateAndMonth()
@@ -114,12 +117,9 @@ class YearlyViewController: UIViewController {
                 }
             }
         })
-        
     }
     
-    
     func sortExpensesByDateAndMonth() {
-       // let filteredByMonthExpenses = yearlyExpenses.filter({ $0.monthOfExpense == currentMonth })
         let sortedExpenses = yearlyExpenses.sorted(by: { $0.date > $1.date } )
         yearlyExpenses.removeAll()
         yearlyExpenses = sortedExpenses
@@ -169,11 +169,6 @@ extension YearlyViewController: UITableViewDataSource {
 extension YearlyViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-//        let item = yearlyExpenses[indexPath.row]
-//        guard let destVC = storyboard?.instantiateViewController(withIdentifier: "EditingViewController") as? EditingViewController else { return }
-//        destVC.expense = item
-//        navigationController?.pushViewController(destVC, animated: true)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

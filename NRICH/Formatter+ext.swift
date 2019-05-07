@@ -94,14 +94,3 @@ extension Formatter {
     
 }
 
-/*
- MMM d, yyyy
-extension Formatter {
-    static let iso8601: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withDay] //[.withMonth, .withDay, .withYear]
-        
-        return formatter
-    }()
-}
-*/

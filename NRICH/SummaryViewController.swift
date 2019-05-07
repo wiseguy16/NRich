@@ -32,7 +32,11 @@ class SummaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         currentMonth = Date().month
+        setupFirebaseData()
         
+    }
+    
+    func setupFirebaseData() {
         ref = Database.database().reference()
         handle = ref?.child("Expense").observe(.childAdded, with: { (snapshot) in
             if let item = snapshot.value as? [String: String] {
@@ -121,14 +125,12 @@ class SummaryViewController: UIViewController {
                 }
             }
         })
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         currentMonth = Date().month
     }
-    
     
     func sortExpensesByDateAndMonth() {
         let filteredByMonthExpenses = monthlyExpenses.filter({ $0.monthOfExpense == currentMonth })
